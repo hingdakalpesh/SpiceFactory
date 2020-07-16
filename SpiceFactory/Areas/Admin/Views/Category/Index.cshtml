@@ -3,40 +3,40 @@
     ViewData["Title"] = "List";
 }
 
-<h1 class="display-4 text-dark">Categories</h1>
-<hr />
+<h1 class="display-4">Categories</h1>
+<br />
 
-<div class="card">
-    @if (Model.Any())
-    {
-        <table class="table">
-            <thead class="thead-dark">
-                <tr class="">
-                    <th>
-                        @Html.DisplayNameFor(m => m.Name)
-                    </th>
-                    <th class="text-right">
-                        <partial name="_CreateButtonPartial" />
-                    </th>
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(m => m.Name)
+                </th>
+                <th class="text-right">
+                    <partial name="_CreateButtonPartial" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => category.Name)
+                    </td>
+                    <td class="text-right">
+                        <partial name="_EditDetailsDeleteButtonsPartial" model="category.Id" />
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var category in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(m => category.Name)
-                        </td>
-                        <td class="text-right">
-                           <partial name="_ViewEditDeleteButtonsPartial" model="category.Id"/>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p class="lead">No data found..</p>
-    }
-</div>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="lead">No data found..</p>
+    <partial name="_CreateButtonPartial" />
+
+}

@@ -12,17 +12,18 @@ namespace SpiceFactory.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext applicationDbContext;
+        private readonly ApplicationDbContext _dbContext;
+        private string _statusMessage;
 
-        public CategoryController(ApplicationDbContext applicationDbContext)
+        public CategoryController(ApplicationDbContext dbContext)
         {
-            this.applicationDbContext = applicationDbContext;
+            this._dbContext = dbContext;
         }
 
         //GET INDEX
         public async Task<IActionResult> Index()
         {
-            List<Category> categories = await applicationDbContext.Categories.ToListAsync();
+            List<Category> categories = await _dbContext.Categories.ToListAsync();
             return View(categories);
         }
 
@@ -39,8 +40,13 @@ namespace SpiceFactory.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                applicationDbContext.Add(category);
-                await applicationDbContext.SaveChangesAsync();
+                if (CategoryExists(category.Name))
+                {
+                    ViewData["StatusMessage"] = "Error: This category already exists. Please enter another name.";
+                    return View(category);
+                }
+                _dbContext.Add(category);
+                await _dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -53,7 +59,7 @@ namespace SpiceFactory.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var category = await applicationDbContext.Categories.FindAsync(id);
+            var category = await _dbContext.Categories.FindAsync(id);
             if(category is null)
             {
                 return NotFound();
@@ -65,35 +71,47 @@ namespace SpiceFactory.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Category category)
         {
-            var existingCategory = await applicationDbContext.Categories.FindAsync(category.Id);
+            var existingCategory = await _dbContext.Categories.FindAsync(category.Id);
             if (category is null)
             {
                 return NotFound();
             }
             if (existingCategory.Name != category.Name)
             {
-                applicationDbContext.Update(category);
-                await applicationDbContext.SaveChangesAsync();
+                _dbContext.Update(category);
+                await _dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ModelState.AddModelError(string.Empty, "Please update the category");
             return View(category);
         }
 
-        //POST DELETE
+        // GET: Admin/SubCategory/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id is null)
+            if (id == null)
             {
                 return NotFound();
             }
-            var category = await applicationDbContext.Categories.FindAsync(id);
-            if (category is null)
+
+            var category = await _dbContext.Categories
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (category == null)
             {
                 return NotFound();
             }
-            applicationDbContext.Remove(category);
-            await applicationDbContext.SaveChangesAsync();
+
+            return View(category);
+        }
+
+        // POST: Admin/SubCategory/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var category = await _dbContext.Categories.FindAsync(id);
+            _dbContext.Categories.Remove(category);
+            await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -103,5 +121,10 @@ namespace SpiceFactory.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        private bool CategoryExists(string name)
+        {
+            return _dbContext.Categories.Any(c => c.Name == name);
+
+        }
     }
 }

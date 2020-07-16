@@ -1,0 +1,50 @@
+﻿@model IEnumerable<SpiceFactory.Models.SubCategory>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Sub-Categories</h1>
+<br />
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category.Name)
+                </th>
+                <th class="text-right">
+                    <partial name="_CreateButtonPartial" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subCategory in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => subCategory.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => subCategory.Category.Name)
+                    </td>
+                    <td class="text-right">
+                        <partial name="_EditDetailsDeleteButtonsPartial" model="subCategory.Id" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="lead">No data found..</p>
+    <partial name="_CreateButtonPartial" />
+
+}
