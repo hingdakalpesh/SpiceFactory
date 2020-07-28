@@ -13,7 +13,6 @@ namespace SpiceFactory.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
-        private string _statusMessage;
 
         public CategoryController(ApplicationDbContext dbContext)
         {

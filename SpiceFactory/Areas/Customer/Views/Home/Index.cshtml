@@ -1,8 +1,81 @@
-﻿@{
+﻿@model HomeIndexViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
+<div>
+    <div id="banner" class="carousel slide" data-ride="carousel" data-wrap="true">
+        <!-- Indicators -->
+        <ul class="carousel-indicators">
+            <li data-target="#banner" data-slide-to="0" class="active"></li>
+            <li data-target="#banner" data-slide-to="1"></li>
+            <li data-target="#banner" data-slide-to="2"></li>
+        </ul>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        <!-- The slideshow -->
+        <div class="carousel-inner rounded">
+            <div class="carousel-item active">
+                <img src="~/images/banner1.jpg" alt="Menu Item1" >
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/banner2.jpg" alt="Menu Item2" >
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/banner3.jpg" alt="Menu Item3" >
+            </div>
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="carousel-control-prev" href="#banner" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#banner" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
 </div>
+<br />
+
+<div>
+    @if (Model.Categories.Any())
+    {
+        <ul id="menu-filters" class="menu-filter-list list-inline text-center">
+            <li class="active btn btn-danger ml-1 mr-1" data-filter=".menu-restaurant">Show All</li>
+
+            @foreach (var item in Model.Categories)
+            {
+                <li class="ml-1 mr-1" data-filter=".@item.Name.Replace(" ",string.Empty)">@item.Name</li>
+            }
+        </ul>
+
+        @foreach (var category in Model.Categories)
+        {
+            <partial name="_ThumbnailAreaPartial"
+                     model="@Model.MenuItems.Where(m=>m.Category.Name.Equals(category.Name))" />
+
+        }
+    }
+</div>
+
+@section Scripts{
+    <script>
+        var posts = $('.post');
+
+        (function ($) {
+
+            $("#menu-filters li").click(function () {
+                $("#menu-filters li").removeClass('active btn btn-secondary');
+                $(this).addClass('active btn btn-secondary');
+
+                var selectedFilter = $(this).data("filter");
+
+                $(".menu-restaurant").fadeOut();
+
+                setTimeout(function () {
+                    $(selectedFilter).slideDown();
+                }, 300);
+            });
+
+        })(jQuery);
+    </script>
+}

@@ -5,7 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SpiceFactory.Data;
 using SpiceFactory.Models;
+using SpiceFactory.Areas.Customer.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace SpiceFactory.Controllers
 {
@@ -13,15 +16,23 @@ namespace SpiceFactory.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _dbContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            HomeIndexViewModel model = new HomeIndexViewModel()
+            {
+                Categories = await _dbContext.Categories.ToListAsync(),
+                Coupons = await _dbContext.Coupons.Where(c => c.IsActive == true).ToListAsync(),
+                MenuItems = await _dbContext.MenuItems.ToListAsync()
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

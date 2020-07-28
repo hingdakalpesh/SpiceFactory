@@ -9,6 +9,10 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20200713111916_AddCategory.cs" />
     <Compile Remove="Data\Migrations\20200713111916_AddCategory.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200716103456_Add MenuItems.cs" />
+    <Compile Remove="Data\Migrations\20200716103456_Add MenuItems.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200717123524_UpdateCouponTable.cs" />
+    <Compile Remove="Data\Migrations\20200717123524_UpdateCouponTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,12 +24,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Customer\ViewModels\" />
     <Folder Include="Controllers\" />
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>
